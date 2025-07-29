@@ -90,7 +90,7 @@ const Body = () => {
 
   const filterTopRated = () => {
     const filtered = listOfRestaurants.filter(
-      (restaurant) => restaurant.avgRating > 4.5
+      (restaurant) => restaurant.avgRating > 4.45
     );
     setFilteredRestaurants(filtered);
   };
