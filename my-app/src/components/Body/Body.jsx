@@ -27,7 +27,7 @@ const Body = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [usingMockData, setUsingMockData] = useState(false);
-
+  const [searchText, setSearchText] = useState('');
   useEffect(() => {
     fetchData();
   }, []);
@@ -115,7 +115,24 @@ const Body = () => {
         </div>
       )}
       
-      <div className='filter'>
+      <div className='filter-container'>
+        <div className='search'>
+          <input type="text" placeholder='cafe' value={searchText} onChange={(e)=>{
+            setSearchText(e.target.value);
+          
+          }}/>
+          <button className="search-btn" onClick={()=>{
+            const filtered=listOfRestaurants.filter((restaurant) =>
+              restaurant.name.toLowerCase().includes(searchText.toLowerCase())
+            );
+            if (filtered.length === 0) {
+              alert('No restaurants found with that name');
+            }
+            // Update filtered restaurants based on search
+            setFilteredRestaurants(filtered);
+            setSearchText(''); // Clear search input after search
+          }}>Search</button>
+        </div>
         <button
           className='filter-btn'
           onClick={filterTopRated}
