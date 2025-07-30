@@ -1,17 +1,14 @@
 import React from 'react';
 import Header from './components/Header/Header';
 import Body from './components/Body/Body';
-
+import {Outlet} from 'react-router-dom';
 const AppLayout = () => {
   return (
     <div className="app">
       <Header />
-      <Body />
+      <Outlet />
     </div>
   );
 };
-
 // Default exported main component
-export default function App() {
-  return <AppLayout />;
-}
+export default AppLayout;
