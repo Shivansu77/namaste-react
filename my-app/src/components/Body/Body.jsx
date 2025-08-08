@@ -95,39 +95,55 @@ const Body = () => {
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">Discover Restaurants</h1>
+          <span className="text-sm text-gray-400">{filteredRestaurants.length} results</span>
+        </div>
+
         {/* Search and Filter Section */}
         <div className="flex flex-col md:flex-row gap-4 mb-8 items-center justify-between">
           <div className="flex-1 w-full md:max-w-md">
             <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Search for restaurants..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    const filtered = listOfRestaurants.filter((restaurant) =>
-                      restaurant.name.toLowerCase().includes(searchText.toLowerCase())
-                    );
-                    if (filtered.length === 0) {
-                      alert('No restaurants found with that name');
+              <div className="relative flex-1">
+                <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 015.364 10.848l3.519 3.519a.75.75 0 11-1.06 1.06l-3.52-3.518A6.75 6.75 0 1110.5 3.75zm0 1.5a5.25 5.25 0 100 10.5 5.25 5.25 0 000-10.5z" clipRule="evenodd" />
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search for restaurants..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const filtered = listOfRestaurants.filter((restaurant) =>
+                        restaurant.name.toLowerCase().includes(searchText.toLowerCase())
+                      );
+                      setFilteredRestaurants(filtered);
                     }
-                    setFilteredRestaurants(filtered);
-                  }
-                }}
-                className="flex-1 p-2.5 border border-gray-600 rounded-lg bg-slate-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
+                  }}
+                  className="w-full pl-10 pr-10 p-2.5 border border-gray-600 rounded-lg bg-slate-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                />
+                {searchText && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchText('')}
+                    className="absolute inset-y-0 right-2 flex items-center px-2 text-gray-400 hover:text-gray-200"
+                    aria-label="Clear search"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
               <button
                 onClick={() => {
                   const filtered = listOfRestaurants.filter((restaurant) =>
                     restaurant.name.toLowerCase().includes(searchText.toLowerCase())
                   );
-                  if (filtered.length === 0) {
-                    alert('No restaurants found with that name');
-                  }
-                  setFilteredRestaurants(filtered);
+                                      setFilteredRestaurants(filtered);
                 }}
-                className="px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+                className="px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-800 shadow-sm active:scale-[0.98]"
               >
                 Search
               </button>
@@ -172,11 +188,11 @@ const Body = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <h3 className="text-xl font-medium text-gray-700">No restaurants found</h3>
-            <p className="text-gray-500 mt-2">Try adjusting your search or filter criteria</p>
+            <h3 className="text-xl font-medium text-gray-200">No restaurants found</h3>
+            <p className="text-gray-400 mt-2">Try adjusting your search or filter criteria</p>
             <button
               onClick={showAllRestaurants}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors shadow-sm"
             >
               Show All Restaurants
             </button>
