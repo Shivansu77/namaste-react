@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import AppLayout from './App';
@@ -7,6 +7,9 @@ import Contact from './components/ContactUs/Contact';
 import About from './components/AboutUs/About';
 import RestrauntMenu from './components/RestrauntMenu/RestrauntMenu';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+// Lazy load the Grocery component
+const Grocery = lazy(() => import('./components/Grocery/Grocery'));
 
 const appRouter = createBrowserRouter([
   {
@@ -28,9 +31,22 @@ const appRouter = createBrowserRouter([
       ,{
         path: '/restaurant/:resId',
         element: <RestrauntMenu />,
-      }
-    ]
-  }
+      },
+      {
+        path: '/grocery',
+        element: (
+          <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+            </div>
+          }>
+            <Grocery />
+          </Suspense>
+        ),
+      },
+    ],
+    errorElement: <Error />,
+  },
 ]);
 
 createRoot(document.getElementById('root')).render(
