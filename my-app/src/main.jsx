@@ -8,6 +8,7 @@ import About from './components/AboutUs/About';
 import RestrauntMenu from './components/RestrauntMenu/RestrauntMenu';
 import Error from './components/Error/Error';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Lazy load the Grocery component
 const Grocery = lazy(() => import('./components/Grocery/Grocery'));
@@ -52,6 +53,8 @@ const appRouter = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={appRouter} />
+    <ThemeProvider>
+      <RouterProvider router={appRouter} />
+    </ThemeProvider>
   </StrictMode>
 );
