@@ -38,7 +38,7 @@ const Body = () => {
       if (restaurantData.length > 0) {
         const formattedRestaurants = restaurantData.map((item) => ({
           ...item.info,
-          id: item.info.id || Math.random().toString(36).substr(2, 9),
+          id: item.info.id || Math.random().toString(36).substring(2, 9),
         }));
 
         setListOfRestaurants(formattedRestaurants);
@@ -74,70 +74,112 @@ const Body = () => {
   }
 
   if (error) {
-    return <div className="error-message">Error: {error}</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 w-full max-w-md">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-red-700">Error: {error}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="body">
-      <div className="filter-container">
-        <div className="search">
-          <input
-            type="text"
-            placeholder="cafe"
-            value={searchText}
-            onChange={(e) => {
-              setSearchText(e.target.value);
-            }}
-          />
-          <button
-            className="search-btn"
-            onClick={() => {
-              const filtered = listOfRestaurants.filter((restaurant) =>
-                restaurant.name
-                  .toLowerCase()
-                  .includes(searchText.toLowerCase())
-              );
-              if (filtered.length === 0) {
-                alert('No restaurants found with that name');
-              }
-              setFilteredRestaurants(filtered);
-              setSearchText('');
-            }}
-          >
-            Search
-          </button>
+    <div className="min-h-screen p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Search and Filter Section */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8 items-center justify-between">
+          <div className="flex-1 w-full md:max-w-md">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Search for restaurants..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    const filtered = listOfRestaurants.filter((restaurant) =>
+                      restaurant.name.toLowerCase().includes(searchText.toLowerCase())
+                    );
+                    if (filtered.length === 0) {
+                      alert('No restaurants found with that name');
+                    }
+                    setFilteredRestaurants(filtered);
+                  }
+                }}
+                className="flex-1 p-2.5 border border-gray-600 rounded-lg bg-slate-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              />
+              <button
+                onClick={() => {
+                  const filtered = listOfRestaurants.filter((restaurant) =>
+                    restaurant.name.toLowerCase().includes(searchText.toLowerCase())
+                  );
+                  if (filtered.length === 0) {
+                    alert('No restaurants found with that name');
+                  }
+                  setFilteredRestaurants(filtered);
+                }}
+                className="px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex gap-3">
+            <button
+              onClick={filterTopRated}
+              disabled={isLoading || error}
+              className="px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white hover:bg-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Top Rated Restaurants
+            </button>
+            <button
+              onClick={showAllRestaurants}
+              disabled={isLoading || error}
+              className="px-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white hover:bg-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Show All
+            </button>
+          </div>
         </div>
-        <button
-          className="filter-btn"
-          onClick={filterTopRated}
-          disabled={isLoading || error}
-        >
-          Top Rated Restaurants
-        </button>
-        <button
-          className="filter-btn show-all"
-          onClick={showAllRestaurants}
-          disabled={isLoading || error}
-        >
-          Show All
-        </button>
-      </div>
 
-      <div className="res-container">
+        {/* Restaurants Grid */}
         {filteredRestaurants.length > 0 ? (
-          filteredRestaurants.map((restaurant) => (
-            <Link key={restaurant.id} to={"restaurant/"+restaurant.id}><RestaurantCard
-              name={restaurant.name}
-              cuisine={
-                restaurant.cuisines?.join(', ') || 'Various cuisines'
-              }
-              rating={restaurant.avgRating}
-              cloudinaryImageId={restaurant.cloudinaryImageId}
-            /></Link>
-          ))
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredRestaurants.map((restaurant) => (
+              <Link 
+                key={restaurant.id} 
+                to={"restaurant/"+restaurant.id}
+                className="block hover:scale-105 transition-transform duration-200 hover:z-10"
+              >
+                <RestaurantCard
+                  name={restaurant.name}
+                  cuisine={restaurant.cuisines?.join(', ') || 'Various cuisines'}
+                  rating={restaurant.avgRating}
+                  cloudinaryImageId={restaurant.cloudinaryImageId}
+                />
+              </Link>
+            ))}
+          </div>
         ) : (
-          <div className="no-restaurants">
-            No restaurants found. Please try again later.
+          <div className="text-center py-12">
+            <h3 className="text-xl font-medium text-gray-700">No restaurants found</h3>
+            <p className="text-gray-500 mt-2">Try adjusting your search or filter criteria</p>
+            <button
+              onClick={showAllRestaurants}
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+            >
+              Show All Restaurants
+            </button>
           </div>
         )}
       </div>
